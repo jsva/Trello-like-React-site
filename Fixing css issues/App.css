@@ -307,7 +307,7 @@ line-height: 1.5;
 width: 40vw;
 }
 
-@media screen and (max-width: 680px) {
+media screen and (max-width: 680px) {
 .create-board-wrapper {
 flex-direction: column;
 }
