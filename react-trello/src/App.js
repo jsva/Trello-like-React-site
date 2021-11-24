@@ -8,17 +8,21 @@ class App extends React.Component {
   state = {
     boards: []
   }
-
-  updateState = () => {
+  componentDidMount()  {
     this.setState({ boards: data.boards});
   }
 
   render() {
     return (
       <div>
-        <button onClick = {this.updateState}>Load boards</button>
-        {console.table(this.state.boards)}
-        <p> {this.state.boardTitle} </p>
+        {this.state.boards.map(board => (
+          <div key={board.id}>
+            <span>{board.id}</span>
+            <h3>{board.title}</h3>
+            <p>{board.background}</p>
+          </div>
+
+        ))}
       </div>
   );
 }
