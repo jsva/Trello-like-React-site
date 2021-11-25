@@ -5,7 +5,7 @@ other = ' .:;,?=)([]}{\\/*-_\'"@' #did not include @ in run, fixxed manually
 numbers = '1234567890'
 allchars = lower+upper+other+numbers
 
-old =  open("old_css.txt", "r")
+old =  open("old_css.txt", "r") 
 new = open('new_css.txt', 'w')
 
 lines = old.readlines()
