@@ -10,7 +10,11 @@ class BoardPreview extends React.Component {
     goToBoard = () => {
         const boardId = this.props.board.id;
         this.props.history.push({
-            pathname: `/board/${boardId}`
+            pathname: `/board/${boardId}`,
+            state: {
+                title: this.props.board.title,
+                background: this.props.board.background
+            }
         })
     }
 

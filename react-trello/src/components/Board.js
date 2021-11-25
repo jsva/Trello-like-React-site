@@ -40,7 +40,15 @@ class Board extends React.Component {
 
     render() {
         return (
-            <div>
+            <div
+            className="board-wrapper"
+            style={{
+                backgroundColor: this.props.location.state.background
+            }}>
+            <div className="board-header">
+                <h3>{this.props.location.state.title}</h3>
+                <button>Delete board</button>
+            </div>
             <div className="'lists-wrapper">
                 {Object.keys(this.state.currentLists).map(key => 
                     <List key={this.state.currentLists[key].id}
