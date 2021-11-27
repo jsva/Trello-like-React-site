@@ -1,7 +1,8 @@
 import React from 'react';
 import Card from './Card';
 import PropTypes from 'prop-types';
-import { cardsRef } from '../firebase';
+import { cardsRef , listsRef} from '../firebase';
+
 
 
 class List extends React.Component {
@@ -12,6 +13,24 @@ class List extends React.Component {
 
     componentDidMount() {
         this.fetchCards(this.props.list.id);
+    }
+
+    deleteList = async () => {
+        try{
+            const listId = this.props.list.id;
+            const cards = await cardsRef
+                .where('card.listId', '==', listId)
+                .get();
+            if(cards.docs.length !== 0) {
+                cards.forEach(card => {
+                    card.ref.delete();
+                })
+            }
+            const list = await listsRef.doc(listId);
+            list.delete();
+        } catch(error) {
+            console.error('Error deleting list: ', error);
+        }
     }
 
     fetchCards = async listId => {
@@ -59,6 +78,7 @@ class List extends React.Component {
             <div className="list">
                 <div>
                     <p>{this.props.list.title}</p>
+                    <span onClick= {this.deleteList}> &times; </span>
                 </div>
                 {Object.keys(this.state.currentCards).map(key => (
                     <Card 
