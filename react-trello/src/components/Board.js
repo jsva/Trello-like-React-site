@@ -1,6 +1,7 @@
 import React from 'react';
 import List from './List';
 import { boardsRef, listsRef } from '../firebase';
+import PropTypes from 'prop-types';
 
 class Board extends React.Component {
 
@@ -61,6 +62,11 @@ class Board extends React.Component {
     }
 }
 
+    deleteBoard = async () => {
+        const boardId = this.props.match.params.boardId;
+        this.props.deleteBoard(boardId);
+    }
+
     render() {
         return (
             <div
@@ -70,12 +76,14 @@ class Board extends React.Component {
             }}>
             <div className="board-header">
                 <h3>{this.state.currentBoard.title}</h3>
-                <button>Delete board</button>
+                <button onClick = {this.deleteBoard}>Delete board</button>
             </div>
             <div className="'lists-wrapper">
                 {Object.keys(this.state.currentLists).map(key => 
-                    <List key={this.state.currentLists[key].id}
-                    list={this.state.currentLists[key]} />
+                    <List 
+                    key={this.state.currentLists[key].id}
+                    list={this.state.currentLists[key]} 
+                    deleteList = {this.props.deleteList} />
                 )}
             </div>
             <form onSubmit={this.createNewList} className="new-list-wrapper">
@@ -88,6 +96,11 @@ class Board extends React.Component {
             </div>
         );
     }
+}
+
+Board.propTypes = {
+    deleteBoard: PropTypes.func.isRequired,
+    deleteList: PropTypes.func.isRequired
 }
 
 export default Board;
