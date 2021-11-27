@@ -1,6 +1,7 @@
 import React from 'react';
 import List from './List';
 import data from '../sampleData';
+import {listsRef} from '../firebase';
 
 class Board extends React.Component {
 
@@ -14,29 +15,22 @@ class Board extends React.Component {
 
     addBoardInput = React.createRef()
 
-    createNewList = (e) => {
+    createNewList = async (e) => { 
+        try {
         e.preventDefault();
         const list = {
-            id: Math.random(),
             title: this.addBoardInput.current.value,
-            board: 300,
-            createdAt: new Date(),
-            cards: [
-                {
-                    id: 1,
-                    text: 'Card 1'
-                },
-                {
-                    id: 2,
-                    text: 'Card 2'
-                }
-            ]
+            board: this.props.match.params.boardId,
+            createdAt: new Date()
         }
-        if(list.title) {
-            this.setState( {currentLists: [...this.state.currentLists, list]});
+        if(list.title && list.board) {
+            await listsRef.add({ list });
             this.addBoardInput.current.value = '';
         }
+    } catch(error) {
+        console.error('Error creating a new list ', error);
     }
+}
 
     render() {
         return (
