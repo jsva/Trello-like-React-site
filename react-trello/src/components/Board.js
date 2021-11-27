@@ -1,6 +1,5 @@
 import React from 'react';
 import List from './List';
-import data from '../sampleData';
 import { boardsRef, listsRef } from '../firebase';
 
 class Board extends React.Component {
@@ -12,7 +11,26 @@ class Board extends React.Component {
 
     componentDidMount() {
         this.getBoard(this.props.match.params.boardId);
-        this.setState( {currentLists: data.lists});
+        this.getLists(this.props.match.params.boardId);
+    }
+
+    getLists = async boardId => {
+        try {
+            const lists = await listsRef
+                .where('list.board', '==', boardId)
+                .orderBy('list.createdAt')
+                .get();
+            lists.forEach(list => {
+                const data = list.data().list;
+                const listObj = {
+                    id: list.id,
+                    ...data
+                }
+            this.setState({ currentLists: [...this.state.currentLists, listObj]})
+            })
+        } catch(error) {
+            console.log('Error fetching lists: ', error);
+        }
     }
 
     getBoard = async boardId => {
