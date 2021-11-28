@@ -87,6 +87,15 @@ deleteBoard = async boardId => {
   }
 }
 
+updateBoard = async(boardId, newTitle) => {
+  try {
+    const board = await boardsRef.doc(boardId);
+    board.update({ 'board.title': newTitle});
+  } catch(error) {
+    console.error('Error updating board: ', error);
+  }
+}
+
   render() {
     return (
       <div>
@@ -110,6 +119,7 @@ deleteBoard = async boardId => {
               {...props}
               deleteBoard = {this.deleteBoard}
               deleteList = {this.deleteList}
+              updateBoard = {this.updateBoard}
               />
             )}
             />
