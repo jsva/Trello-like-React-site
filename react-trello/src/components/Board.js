@@ -2,6 +2,7 @@ import React from 'react';
 import List from './List';
 import { boardsRef, listsRef } from '../firebase';
 import PropTypes from 'prop-types';
+import {AuthConsumer} from './AuthContext';
 
 class Board extends React.Component {
 
@@ -93,7 +94,9 @@ class Board extends React.Component {
 
     render() {
         return (
-            <div
+            <AuthConsumer>
+            { ({ user }) =>(
+                <div
             className="board-wrapper"
             style={{
                 backgroundColor: this.state.currentBoard.background
@@ -124,6 +127,8 @@ class Board extends React.Component {
                 placeholder=" + New List" />
             </form>
             </div>
+            ) }
+            </AuthConsumer>
         );
     }
 }

@@ -5,6 +5,7 @@ import Home from './components/pages/Home';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import PageNotFound from './components/pages/PageNotFound';
 import { boardsRef, listsRef, cardsRef} from './firebase';
+import {AuthProvider} from './components/AuthContext';
 
 
 
@@ -99,6 +100,7 @@ updateBoard = async(boardId, newTitle) => {
     return (
       <div>
         <BrowserRouter>
+        <AuthProvider>
         <Switch>
             <Route 
             exact 
@@ -128,6 +130,7 @@ updateBoard = async(boardId, newTitle) => {
             createNewBoard= {this.createNewBoard}/>
             <Board />} */}
             </Switch>
+            </AuthProvider>
         </BrowserRouter>
       </div>
   );
