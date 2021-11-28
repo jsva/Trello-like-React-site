@@ -1,7 +1,7 @@
 
 lower = 'abcdefghijklmnopqrstuvwxyz'
 upper = lower.upper()
-other = ' .:;,?=)([]}{\\/*-_\'"@' #did not include @ in run, fixxed manually
+other = ' .:;,?=)([]}{\\/*-_\'"@#' #did not include @ in run, fixxed manually
 numbers = '1234567890'
 allchars = lower+upper+other+numbers
 
