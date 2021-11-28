@@ -17,18 +17,41 @@ class List extends React.Component {
 
     fetchCards = async listId => {
         try {
-            const cards = await cardsRef
+            await cardsRef
                 .where('card.listId', '==', listId)
                 .orderBy('card.createdAt')
-                .get();
-            cards.forEach(card => {
-                const data = card.data().card;
-                const cardObj = {
-                    id: card.id,
-                    ...data
-                }
-                this.setState( {currentCards: [...this.state.currentCards, cardObj ]})
-            })
+                .onSnapshot(snapshot => {
+                    snapshot.docChanges()
+                    .forEach( change => {
+                        const doc = change.doc
+                        const card = {
+                            id: doc.id,
+                            text: doc.data().card.text,
+                            labels: doc.data().card.labels
+                        }
+                        if(change.type === 'added') {
+                            this.setState( { currentCards: [...this.state.currentCards, card ]})
+                        }
+                        if (change.type === 'removed') {
+                            this.setState( {
+                                currentCards: [
+                                    ...this.state.currentCards.filter(card=> {
+                                        return card.id !== change.doc.id;
+                                    })
+                                ]
+                            })
+                        }
+                        if(change.type === 'modified') {
+                            const index = this.state.currentCards.findIndex(item => {
+                                return item.id === change.doc.id;
+                            })
+                            const cards = [...this.state.currentCards];
+                            cards[index] = card;
+                            this.setState( { currentCards: cards});
+                        }
+                    })
+                })
+            
         } catch(error) {
             console.error('Error fetching cards: ', error);
         }
