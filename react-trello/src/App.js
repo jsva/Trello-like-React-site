@@ -6,7 +6,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import PageNotFound from './components/pages/PageNotFound';
 import { boardsRef, listsRef, cardsRef} from './firebase';
 import {AuthProvider} from './components/AuthContext';
-
+import UserForm from './components/UserForm';
 
 
 class App extends React.Component {
@@ -102,6 +102,10 @@ updateBoard = async(boardId, newTitle) => {
         <BrowserRouter>
         <AuthProvider>
         <Switch>
+          <Route
+            exact
+            path='/'
+            component={UserForm} />
             <Route 
             exact 
             path="/:userId/boards"
