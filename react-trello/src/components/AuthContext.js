@@ -6,9 +6,24 @@ const AuthContext = React.createContext();
 
 class AuthProvider extends React.Component {
     state = {
-        user: {
-            name: 'TestUser'
-        }
+        user: {}
+    }
+
+    componentWillMount() {
+        firebaseAuth.onAuthStateChanged((user) => {
+            if(user) {
+                this.setState({
+                    user: {
+                        id: user.id,
+                        email: user.email
+                    }
+                })
+            } else {
+                this.setState( {
+                    user: {}
+                })
+            }
+        })
     }
 
     signUp = async (email, password, e) => {
