@@ -20,15 +20,28 @@ class Board extends React.Component {
             const lists = await listsRef
                 .where('list.board', '==', boardId)
                 .orderBy('list.createdAt')
-                .get();
-            lists.forEach(list => {
-                const data = list.data().list;
-                const listObj = {
-                    id: list.id,
-                    ...data
-                }
-            this.setState({ currentLists: [...this.state.currentLists, listObj]})
-            })
+                .onSnapshot(snapshot => {
+                    snapshot.docChanges()
+                    .forEach(change => {
+                        const doc = change.doc;
+                        const list = {
+                            id: doc.id,
+                            title: doc.data().list.title
+                        }
+                        this.setState( {
+                            currentLists: [...this.state.currentLists, list]
+                        })
+                    })
+                })
+            //     .get();
+            // lists.forEach(list => {
+            //     const data = list.data().list;
+            //     const listObj = {
+            //         id: list.id,
+            //         ...data
+            //     }
+            // this.setState({ currentLists: [...this.state.currentLists, listObj]})
+            // })
         } catch(error) {
             console.log('Error fetching lists: ', error);
         }
