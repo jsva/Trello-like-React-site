@@ -8,7 +8,7 @@ class UserForm extends React.Component {
     render() {
         return(
             <AuthConsumer>
-                { ({signUp }) => (
+                { ({signUp, logIn, user }) => (
                     <React.Fragment>
                     <div className='sign-up-wrapper'>
                         <h2>Sign in or create account</h2>
@@ -28,6 +28,12 @@ class UserForm extends React.Component {
                                     />
                             </div>
                             <div>
+                                <button
+                                    onClick={ (e) => logIn(
+                                        this.emailInput.current.value,
+                                        this.passwordInput.current.value,
+                                        e
+                                    )} > Login </button>
                                 <button
                                 onClick={(e) => signUp(
                                     this.emailInput.current.value,

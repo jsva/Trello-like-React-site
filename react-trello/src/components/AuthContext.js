@@ -23,12 +23,39 @@ class AuthProvider extends React.Component {
         }
     }
 
+    logIn = async (email, password, e) => {
+        try  {
+            e.preventDefault();
+            await firebaseAuth.signInWithEmailAndPassword(
+                email, 
+                password
+            );
+            console.log('logged in')
+        } catch(error) {
+
+        }
+    }
+
+    logOut = () => {
+        try{
+            firebaseAuth.signOut();
+            this.setState({
+                user: []
+            });
+            console.log('signed out')
+        } catch(error) {
+
+        }
+    }
+
     render() {
         return (
             <AuthContext.Provider
                 value={{ 
                     user: this.state.user,
-                    signUp: this.signUp }}>
+                    signUp: this.signUp,
+                    logIn: this.logIn,
+                    logOut: this.logOut}}>
                 {this.props.children}
             </AuthContext.Provider>
         )
