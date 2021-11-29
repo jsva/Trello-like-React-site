@@ -8,7 +8,8 @@ class Board extends React.Component {
 
     state = {
         currentBoard: {},
-        currentLists: []
+        currentLists: [],
+        message: ''
     };
 
     componentDidMount() {
@@ -56,7 +57,9 @@ class Board extends React.Component {
             const board = await boardsRef.doc(boardId).get();
             this.setState( { currentBoard: board.data().board } )
         } catch(error) {
-            console.log('error getting boards ', error);
+            this.setState( {
+                message: 'Board not found'
+            })
         }
     }
 
@@ -82,6 +85,9 @@ class Board extends React.Component {
     deleteBoard = async () => {
         const boardId = this.props.match.params.boardId;
         this.props.deleteBoard(boardId);
+        this.setState( {
+            message: 'Board not found'
+        })
     }
 
     updateBoard = e => {
@@ -96,11 +102,15 @@ class Board extends React.Component {
         return (
             <AuthConsumer>
             { ({ user }) =>(
+                <React.Fragment>
+                {
+                    user.id === this.state.currentBoard.user ? (
                 <div
             className="board-wrapper"
             style={{
                 backgroundColor: this.state.currentBoard.background
             }}>
+            {this.state.message === '' ? (
             <div className="board-header">
                 {/* <h3>{this.state.currentBoard.title}</h3> */}
                 <input
@@ -111,6 +121,9 @@ class Board extends React.Component {
                 />
                 <button onClick = {this.deleteBoard}>Delete board</button>
             </div>
+            ): (
+                <h2>{this.state.message}</h2>
+            )}
             <div className="'lists-wrapper">
                 {Object.keys(this.state.currentLists).map(key => 
                     <List 
@@ -121,13 +134,18 @@ class Board extends React.Component {
             </div>
             <form onSubmit={this.createNewList} className="new-list-wrapper">
                 <input 
-                type="text"
+                type={this.state.message === '' ? 'text' : 'hidden'}
                 ref = {this.addBoardInput}
                 name="name"
                 placeholder=" + New List" />
             </form>
             </div>
-            ) }
+            ) :(
+                <span></span>
+                )
+            }
+            </React.Fragment>
+        )}
             </AuthConsumer>
         );
     }

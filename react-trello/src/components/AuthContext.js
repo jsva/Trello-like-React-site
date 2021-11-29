@@ -14,7 +14,7 @@ class AuthProvider extends React.Component {
             if(user) {
                 this.setState({
                     user: {
-                        id: user.id,
+                        id: user.uid,
                         email: user.email
                     }
                 })
