@@ -12,7 +12,6 @@ class Home extends React.Component {
     render() {
         return (
             <div>
-            <span>{this.props.match.params.userId}</span>
             <CreateBoardForm createNewBoard={this.props.createNewBoard} />
             <div className="board-preview-wrapper">
             {

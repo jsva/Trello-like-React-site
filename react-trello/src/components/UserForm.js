@@ -5,13 +5,19 @@ class UserForm extends React.Component {
     emailInput = React.createRef()
     passwordInput = React.createRef()
 
+    redirect = (userId) => {
+        this.props.history.push(`/${userId}/boards`)
+    }
+
     render() {
         return(
             <AuthConsumer>
-                { ({signUp, logIn, user }) => (
+                { ({signUp, logIn, user, authMessage }) => (
                     <React.Fragment>
+                    {!user.id ? (
                     <div className='sign-up-wrapper'>
                         <h2>Sign in or create account</h2>
+                        {authMessage ? <span>{authMessage}</span>  : ''}
                         <form className='sign-up-form'>
                             <div>
                                 <input 
@@ -45,6 +51,11 @@ class UserForm extends React.Component {
                             </div>
                         </form>
                     </div>
+                    ) : (
+                        <button onClick={ () => this.redirect(user.id)}>
+                            Go to my boards
+                        </button>
+                    )}
                 </React.Fragment>
                 )}
             </AuthConsumer>
