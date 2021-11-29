@@ -6,7 +6,7 @@ import CreateBoardForm from '../CreateBoardForm';
 class Home extends React.Component {
 
     componentDidMount()  {
-        this.props.getBoards();
+        this.props.getBoards(this.props.match.params.userId);
       }
 
     render() {
