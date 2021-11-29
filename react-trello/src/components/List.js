@@ -2,6 +2,7 @@ import React from 'react';
 import Card from './Card';
 import PropTypes from 'prop-types';
 import { cardsRef , listsRef} from '../firebase';
+import { AuthConsumer} from './AuthContext';
 
 
 
@@ -59,14 +60,15 @@ class List extends React.Component {
 
     nameInput = React.createRef();
 
-    createNewCard = async (e) => {
+    createNewCard = async (e, userId) => {
         try {
         e.preventDefault();
         const card = {
             text: this.nameInput.current.value,
             listId: this.props.list.id,
             labels: [],
-            createdAt: new Date()
+            createdAt: new Date(),
+            user: userId
         }
         if(card.text && card.listId) {
             await cardsRef.add({ card })
@@ -97,7 +99,9 @@ updateList = async e => {
 
     render() {
         return(
-            <div className="list">
+            <AuthConsumer>
+                { ({ user}) => (
+                  <div className="list">
                 <div>
                     {/* <p>{this.props.list.title}</p> */}
                     <input
@@ -115,7 +119,7 @@ updateList = async e => {
                     />
                 ))}
                 <form 
-                onSubmit={this.createNewCard} 
+                onSubmit={ (e) => this.createNewCard(e, user.id)} 
                 className="new-card-wrapper">
                     <input 
                     type="text"
@@ -123,7 +127,9 @@ updateList = async e => {
                     name="name"
                     placeholder=" + New card" />
                 </form>
-            </div>
+            </div>  
+                )}
+            </AuthConsumer>    
         );
     }
 
