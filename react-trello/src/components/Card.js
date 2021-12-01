@@ -77,7 +77,7 @@ class Card extends React.Component {
                     readOnly
                     value={this.props.data.text}> </TextareaAutosize>
                     <input type='checkbox' id='checkbox1' className='checkbox'
-                    onClick= {this.clickCheckbox} checked={this.state.checkboxClicked} />
+                    onChange= {this.clickCheckbox} checked={this.state.checkboxClicked} />
                     {/* <label for='checkbox1'> Done </label> */}
                     <span onClick={this.deleteCard}> &times; </span>
 
