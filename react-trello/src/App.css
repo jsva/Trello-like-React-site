@@ -192,6 +192,16 @@ border-radius: 5px;
 opacity: 1;
 }
 
+.card-hidden {
+  margin: 10px 0;
+  padding: 10px;
+  background: rgb(105, 102, 102);
+  border-radius: 5px;
+  opacity: 0.4;
+  }
+  
+
+
 .card-labels {
 display: flex;
 }

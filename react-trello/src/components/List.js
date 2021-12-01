@@ -28,7 +28,8 @@ class List extends React.Component {
                         const card = {
                             id: doc.id,
                             text: doc.data().card.text,
-                            labels: doc.data().card.labels
+                            labels: doc.data().card.labels,
+                            checkboxClicked: doc.data().card.checkboxClicked
                         }
                         if(change.type === 'added') {
                             this.setState( { currentCards: [...this.state.currentCards, card ]})
@@ -68,7 +69,8 @@ class List extends React.Component {
             listId: this.props.list.id,
             labels: [],
             createdAt: new Date(),
-            user: userId
+            user: userId,
+            checkboxClicked: false
         }
         if(card.text && card.listId) {
             await cardsRef.add({ card })
