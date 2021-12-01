@@ -22,8 +22,6 @@ class Card extends React.Component {
             // e.preventDefault();
             const cardId = this.props.data.id;
             const card = await cardsRef.doc(cardId);
-            console.log('Made it here')
-            console.log(card)
             card.update( {
                 'card.checkboxClicked' : this.state.checkboxClicked
             });
