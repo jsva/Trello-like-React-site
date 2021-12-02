@@ -10,31 +10,10 @@ class Card extends React.Component {
 
     state = {
         modalOpen: false,
-        checkboxClicked: false
     }
 
     toggleModal = () => {
         this.setState({ modalOpen: !this.state.modalOpen})
-    }
-
-    updateCard = async () => {
-        try {
-            // e.preventDefault();
-            const cardId = this.props.data.id;
-            const card = await cardsRef.doc(cardId);
-            card.update( {
-                'card.checkboxClicked' : this.state.checkboxClicked
-            });
-        } catch(error) {
-            console.error('Error updating cards: ', error);
-        }
-    }
-
-    componentDidMount() {
-        console.log(this.props.data.checkboxClicked)
-        this.setState( {
-            checkboxClicked: this.props.data.checkboxClicked
-        });
     }
 
     deleteCard = async e => {
@@ -48,17 +27,26 @@ class Card extends React.Component {
         }
     }
 
+    updateCard = async (newValue) => {
+        try {
+            const cardId = this.props.data.id;
+            const card = await cardsRef.doc(cardId);
+            card.update( {
+                'card.checkboxClicked' : newValue
+            });
+        } catch(error) {
+            console.error('Error updating cards: ', error);
+        }
+    }
     clickCheckbox = () => {
-        this.setState( {
-            checkboxClicked: !this.state.checkboxClicked
-        })
-        this.updateCard();
+        const newValue = !this.props.data.checkboxClicked
+        this.updateCard(newValue);
     }
 
     render() {
         return (
             <React.Fragment>
-            <div className={!this.state.checkboxClicked ? "card" : "card-hidden"}>
+            <div className={!this.props.data.checkboxClicked ? "card" : "card-hidden"}>
                 <div className='cards-labels'>
                     {this.props.data.labels.map(label => {
                         return <span   
@@ -74,8 +62,9 @@ class Card extends React.Component {
                     onClick = {this.toggleModal}
                     readOnly
                     value={this.props.data.text}> </TextareaAutosize>
+                    <button onClick={this.printCheck}> PRINT </button>
                     <input type='checkbox' id='checkbox1' className='checkbox'
-                    onChange= {this.clickCheckbox} checked={this.state.checkboxClicked} />
+                    onChange= {this.clickCheckbox} checked={this.props.data.checkboxClicked} />
                     {/* <label for='checkbox1'> Done </label> */}
                     <span onClick={this.deleteCard}> &times; </span>
 
