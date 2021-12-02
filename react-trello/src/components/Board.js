@@ -9,7 +9,10 @@ class Board extends React.Component {
     state = {
         currentBoard: {},
         currentLists: [],
-        message: ''
+        message: '',
+        boardIds: [],
+        nextId: this.props.match.params.boardId,
+        prevId: this.props.match.params.boardId
     };
 
     componentDidMount() {
@@ -65,6 +68,7 @@ class Board extends React.Component {
         try {
             const board = await boardsRef.doc(boardId).get();
             this.setState( { currentBoard: board.data().board } )
+            this.getBoardIds();
         } catch(error) {
             this.setState( {
                 message: 'Board not found'
@@ -109,6 +113,64 @@ class Board extends React.Component {
         }
     }
 
+    getBoardIds = async () => {
+        try {
+            console.log('CALLED')
+            const userId = this.state.currentBoard.user
+            const boards = await boardsRef
+            .where('board.user', '==', userId)
+            .orderBy('board.createdAt')
+            .get();
+            boards.forEach(board => {
+                const newId = board.id;
+                this.setState( { boardIds: [...this.state.boardIds, newId]})
+            })
+            this.setNextId();
+            this.setPrevId();
+        } catch(error) {
+          console.log('Error getting boards ', error);
+        }
+      }
+    
+    setNextId = () => {
+        if(this.state.boardIds.length <= 1) {
+            this.setState({nextId: this.props.match.params.boardId});
+            return;
+        }
+        const currentId = this.props.match.params.boardId;
+        const index = this.state.boardIds.findIndex(id => {
+            return id === currentId;
+        });
+        let nextId = this.state.boardIds[0];
+        if (index + 1 < this.state.boardIds.length) {
+            nextId = this.state.boardIds[index + 1];
+        }
+        console.log('nextId',nextId)
+        this.setState( {
+            nextId: nextId
+        })
+    }
+
+    setPrevId = () => {
+        const length = this.state.boardIds.length;
+        if(length <= 1) {
+            this.setState({prevId: this.props.match.params.boardId});
+            return;
+        }
+        const currentId = this.props.match.params.boardId;
+        const index = this.state.boardIds.findIndex(id => {
+            return id === currentId;
+        });
+        let prevId = this.state.boardIds[length -1];
+        if (index > 0) {
+            prevId = this.state.boardIds[index - 1];
+        }
+        console.log('prevId',prevId)
+        this.setState( {
+            prevId: prevId
+        })
+    }
+
     render() {
         return (
             <AuthConsumer>
@@ -151,6 +213,10 @@ class Board extends React.Component {
                 name="name"
                 placeholder=" + New List" />
             </form>
+            <a href={`/board/${this.state.prevId}`}>
+            <button>Previous Board</button> </a>
+            <a href={`/board/${this.state.nextId}`}>
+            <button>Next Board</button> </a>
             </div>
             ) :(
                 <span></span>
@@ -166,7 +232,7 @@ class Board extends React.Component {
 Board.propTypes = {
     deleteBoard: PropTypes.func.isRequired,
     deleteList: PropTypes.func.isRequired,
-    updateBoard: PropTypes.func.isRequired
+    updateBoard: PropTypes.func.isRequired,
 }
 
 export default Board;
