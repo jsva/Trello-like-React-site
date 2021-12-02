@@ -25,15 +25,16 @@ class Board extends React.Component {
                 .onSnapshot(snapshot => {
                     snapshot.docChanges()
                     .forEach(change => {
-                        if(change.type === 'added') {
-                            const doc = change.doc
+                        const doc = change.doc
                         const list = {
                             id: doc.id,
-                            title: doc.data().list.title
+                            title: doc.data().list.title,
+                            minimized: doc.data().list.minimized
                         }
-                        this.setState( {
-                            currentLists: [...this.state.currentLists, list]
-                        }) 
+                        if(change.type === 'added') {
+                            this.setState( {
+                                currentLists: [...this.state.currentLists, list]
+                            }) 
                         }
                         if (change.type === 'removed') {
                             this.setState( {
@@ -43,6 +44,14 @@ class Board extends React.Component {
                                     })
                                 ]
                             })
+                        }
+                        if(change.type === 'modified') {
+                            const index = this.state.currentLists.findIndex(item => {
+                                return item.id === change.doc.id;
+                            })
+                            const lists = [...this.state.currentLists];
+                            lists[index] = list;
+                            this.setState( { currentLists: lists});
                         }
                     })
                 })
@@ -72,7 +81,8 @@ class Board extends React.Component {
             title: this.addBoardInput.current.value,
             board: this.props.match.params.boardId,
             createdAt: new Date(),
-            user: userId
+            user: userId,
+            minimized: false
         }
         if(list.title && list.board) {
             await listsRef.add({ list });

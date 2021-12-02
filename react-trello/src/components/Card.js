@@ -43,6 +43,7 @@ class Card extends React.Component {
         this.updateCard(newValue);
     }
 
+
     render() {
         return (
             <React.Fragment>
@@ -62,7 +63,6 @@ class Card extends React.Component {
                     onClick = {this.toggleModal}
                     readOnly
                     value={this.props.data.text}> </TextareaAutosize>
-                    <button onClick={this.printCheck}> PRINT </button>
                     <input type='checkbox' id='checkbox1' className='checkbox'
                     onChange= {this.clickCheckbox} checked={this.props.data.checkboxClicked} />
                     {/* <label for='checkbox1'> Done </label> */}

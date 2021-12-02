@@ -87,7 +87,7 @@ deleteList = () => {
     this.props.deleteList(listId);
 }
 
-updateList = async e => {
+updateListTitle = async e => {
     try {
         const listId = this.props.list.id;
         const newTitle = e.currentTarget.value;
@@ -95,10 +95,22 @@ updateList = async e => {
         list.update( { 'list.title': newTitle} );
 
     } catch(error) {
-        console.error('Error updating list: ', error);
+        console.error('Error updating list title: ', error);
     }
 }
 
+updateListMinimized = async () => {
+    try {
+        const listId = this.props.list.id;
+        const newValue = !this.props.list.minimized;
+        console.log('new value: ', newValue)
+        const list = await listsRef.doc(listId);
+        list.update( { 'list.minimized': newValue} );
+
+    } catch(error) {
+        console.error('Error updating list minimization status: ', error);
+        }
+    }
 
     render() {
         return(
@@ -110,11 +122,18 @@ updateList = async e => {
                     <input
                     type='text'
                     name='listTitle'
-                    onChange={this.updateList}
+                    onChange={this.updateListTitle}
                     defaultValue={this.props.list.title}
                     />
                     <span onClick= {this.deleteList}> &times; </span>
+                    <button onClick={this.updateListMinimized}>
+                        {this.props.list.minimized ? 'Show' : 'Hide'}
+                        </button>
                 </div>
+                {this.props.list.minimized ? (
+                    <span></span>
+                ) : (
+                <React.Fragment>    
                 {Object.keys(this.state.currentCards).map(key => (
                     <Card 
                     key={key} 
@@ -130,6 +149,8 @@ updateList = async e => {
                     name="name"
                     placeholder=" + New card" />
                 </form>
+                </React.Fragment>
+                )}
             </div>  
                 )}
             </AuthConsumer>    
