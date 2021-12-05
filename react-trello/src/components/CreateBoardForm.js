@@ -6,7 +6,14 @@ class CreateBoardForm extends React.Component {
 
     state = {
         title: '',
-        background: '#80ccff'
+        background: '#80ccff',
+        colorOneValue: '#',
+        colorOneName: 'Extra Color 1', 
+        colorTwoValue: '#',
+        colorTwoName: 'Extra Color 2',
+        colorThreeValue: '#', 
+        colorThreeName: 'Extra Color 3'
+
     }
 
     handleSubmit = (e, userId) => {
@@ -21,11 +28,28 @@ class CreateBoardForm extends React.Component {
             this.props.createNewBoard(board)
         } 
     }
+
+    updateColorName = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+        this.setState( {
+            [name]: value
+        })
+    }
+
+    updateColorValue = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+        this.setState( {
+            [name]: value
+        })
+    }
     
     render() {
         return (
             <AuthConsumer>
                 {({ user }) => (
+                <React.Fragment>
                 <form className="create-board-wrapper" 
             onSubmit={(e) => this.handleSubmit(e, user.id)}>
                 <input
@@ -42,9 +66,64 @@ class CreateBoardForm extends React.Component {
                     <option value="#ffb3ff">Pink</option>
                     <option value="#bf00ff">Purple</option>
                     <option value="#ffad33">Orange</option>
+                    <option value={this.state.colorOneValue}>{this.state.colorOneName}</option>
+                    <option value={this.state.colorTwoValue}>{this.state.colorTwoName}</option>
+                    <option value={this.state.colorThreeValue}>{this.state.colorThreeName}</option>
                 </select>
                 <button type="submit">Create new board</button>
-            </form>  )}
+            </form>  
+            <div>
+                <input
+                    type='text'
+                    name='colorOneName'
+                    onChange={(e) => {
+                        this.updateColorName(e);
+                    }}
+                    defaultValue={this.state.colorOneName}
+                />
+                <input
+                    type='text'
+                    name='colorOneValue'
+                    onChange={(e) => {
+                        this.updateColorValue(e);
+                    }}
+                    defaultValue={this.state.colorOneValue}
+                />
+                <input
+                    type='text'
+                    name='colorTwoName'
+                    onChange={(e) => {
+                        this.updateColorName(e);
+                    }}
+                    defaultValue={this.state.colorTwoName}
+                />
+                <input
+                    type='text'
+                    name='colorTwoValue'
+                    onChange={(e) => {
+                        this.updateColorValue(e);
+                    }}
+                    defaultValue={this.state.colorTwoValue}
+                />
+                <input
+                    type='text'
+                    name='coloThreeName'
+                    onChange={(e) => {
+                        this.updateColorName(e);
+                    }}
+                    defaultValue={this.state.colorThreeName}
+                />
+                <input
+                    type='text'
+                    name='colorThreeValue'
+                    onChange={(e) => {
+                        this.updateColorValue(e);
+                    }}
+                    defaultValue={this.state.colorThreeValue}
+                />
+            </div>
+            </React.Fragment>
+            )}
             </AuthConsumer>
          
         )

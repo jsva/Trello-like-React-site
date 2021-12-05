@@ -115,7 +115,6 @@ class Board extends React.Component {
 
     getBoardIds = async () => {
         try {
-            console.log('CALLED')
             const userId = this.state.currentBoard.user
             const boards = await boardsRef
             .where('board.user', '==', userId)

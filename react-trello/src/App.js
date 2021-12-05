@@ -74,8 +74,6 @@ deleteBoard = async boardId => {
         this.deleteList(list.ref.id);
       })
     }
-
-    
     const board = await boardsRef.doc(boardId);
     this.setState( {
       boards: [
