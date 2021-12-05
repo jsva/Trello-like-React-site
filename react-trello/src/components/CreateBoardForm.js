@@ -12,7 +12,8 @@ class CreateBoardForm extends React.Component {
         colorTwoValue: '#',
         colorTwoName: 'Extra Color 2',
         colorThreeValue: '#', 
-        colorThreeName: 'Extra Color 3'
+        colorThreeName: 'Extra Color 3',
+        showExtraColor: false
 
     }
 
@@ -44,6 +45,12 @@ class CreateBoardForm extends React.Component {
             [name]: value
         })
     }
+
+    showColorPicker = () => {
+        this.setState({
+            showExtraColor: !this.state.showExtraColor
+        })
+    }
     
     render() {
         return (
@@ -73,6 +80,9 @@ class CreateBoardForm extends React.Component {
                 <button type="submit">Create new board</button>
             </form>  
             <div>
+                <button onClick={this.showColorPicker}> {this.state.showExtraColor ? 'Hide' : 'Show'} extra color selector</button>
+                { this.state.showExtraColor ? (
+                <React.Fragment>
                 <input
                     type='text'
                     name='colorOneName'
@@ -121,7 +131,12 @@ class CreateBoardForm extends React.Component {
                     }}
                     defaultValue={this.state.colorThreeValue}
                 />
+                </React.Fragment>
+                ) : (
+                    <span> </span>
+                )}
             </div>
+            
             </React.Fragment>
             )}
             </AuthConsumer>
