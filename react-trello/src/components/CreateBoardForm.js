@@ -36,7 +36,6 @@ class CreateBoardForm extends React.Component {
             const retrievedColors = await colorsRef
             .where('colors.user', '==', userId)
             .get();
-            console.log(retrievedColors.size);
             if (retrievedColors.size === 0) {
                 const colors = {
                     user: userId,
@@ -47,15 +46,12 @@ class CreateBoardForm extends React.Component {
                     colorThreeValue: '#', 
                     colorThreeName: 'Extra Color 3',
                 }
-                console.log('Found no database entry')
-                console.log(colors);
+                console.log('Found no database entry, Creating new')
                 const newColors = await colorsRef.add({colors});
-                console.log(newColors)
                 this.setState({extraColors: colors, id: newColors.id })
             }
             else {
             retrievedColors.forEach(colors => {
-                console.log('Actually here')
                 const data = colors.data().colors;
                 this.setState({extraColors: data, id: colors.id});
                 })
@@ -68,12 +64,15 @@ class CreateBoardForm extends React.Component {
     updateColorName = async (e) => {
         try {
             const name = 'colors.' + e.target.name;
-            console.log(name);
             const value = e.target.value;
             const colors = await colorsRef.doc(this.state.id);
             colors.update({[name]: value})
-            console.log('updated colors to: ', value);
-            
+            this.setState(prevState => ({
+                extraColors: {
+                    ...prevState.extraColors,
+                    [e.target.name] : value
+                }
+            }))            
         } catch(error) {
             console.error('Error updating color name: ', error);
           }
@@ -82,11 +81,15 @@ class CreateBoardForm extends React.Component {
     updateColorValue = async (e) => {
         try {
             const name = 'colors.' + e.target.name;
-            console.log(name);
             const value = e.target.value;
             const colors = await colorsRef.doc(this.state.id);
             colors.update({[name]: value})
-            console.log('updated colors to: ', value);
+            this.setState(prevState => ({
+                extraColors: {
+                    ...prevState.extraColors,
+                    [e.target.name] : value
+                }
+            }))
             
         } catch(error) {
             console.error('Error updating color value: ', error);
@@ -120,21 +123,20 @@ class CreateBoardForm extends React.Component {
                     <option value="#ffb3ff">Pink</option>
                     <option value="#bf00ff">Purple</option>
                     <option value="#ffad33">Orange</option>
-                    <option value={this.state.extraColors.colorOneValue}>{this.state.extraColors.colorOneName}</option>
-                    <option value={this.state.extraColors.colorTwoValue}>{this.state.extraColors.colorTwoName}</option>
-                    <option value={this.state.extraColors.colorThreeValue}>{this.state.extraColors.colorThreeName}</option>
+                    <option value={this.state.extraColors.colorOneValue}>
+                        {this.state.extraColors.colorOneName}</option>
+                    <option value={this.state.extraColors.colorTwoValue}>
+                        {this.state.extraColors.colorTwoName}</option>
+                    <option value={this.state.extraColors.colorThreeValue}>
+                        {this.state.extraColors.colorThreeName}</option>
                 </select>
                 <button type="submit">Create new board</button>
             </form>  
             <div>
-                <button onClick= {
-                    () => {
-                        console.log(this.state.extraColors.colorOneName)
-                    }
-                }>CLICK </button>
                 <button onClick={this.showColorPicker}> {this.state.showExtraColor ? 'Hide' : 'Show'} extra color selector</button>
                 { this.state.showExtraColor ? (
                 <React.Fragment>
+                 <div style={{ backgroundColor: this.state.extraColors.colorOneValue}}>
                 <input
                     type='text'
                     name='colorOneName'
@@ -152,6 +154,9 @@ class CreateBoardForm extends React.Component {
                     }}
                     defaultValue={this.state.extraColors.colorOneValue}
                 />
+                </div>
+                <br/>
+                <div style={{ backgroundColor: this.state.extraColors.colorTwoValue}}>
                 <input
                     type='text'
                     name='colorTwoName'
@@ -168,6 +173,9 @@ class CreateBoardForm extends React.Component {
                     }}
                     defaultValue={this.state.extraColors.colorTwoValue}
                 />
+                </div>
+                <br/>
+                <div style={{ backgroundColor: this.state.extraColors.colorThreeValue}}>
                 <input
                     type='text'
                     name='colorThreeName'
@@ -184,6 +192,7 @@ class CreateBoardForm extends React.Component {
                     }}
                     defaultValue={this.state.extraColors.colorThreeValue}
                 />
+                </div>
                 </React.Fragment>
                 ) : (
                     <span> </span>
