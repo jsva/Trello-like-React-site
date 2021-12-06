@@ -1,20 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { AuthConsumer } from '../components/AuthContext';
+import { colorsRef } from '../firebase';
+
 
 class CreateBoardForm extends React.Component {
 
     state = {
         title: '',
         background: '#80ccff',
-        colorOneValue: '#',
-        colorOneName: 'Extra Color 1', 
-        colorTwoValue: '#',
-        colorTwoName: 'Extra Color 2',
-        colorThreeValue: '#', 
-        colorThreeName: 'Extra Color 3',
+        extraColors: {},
         showExtraColor: false
 
+    }
+
+    componentDidMount() {
+        this.getColors(this.props.userId)
     }
 
     handleSubmit = (e, userId) => {
@@ -30,20 +31,66 @@ class CreateBoardForm extends React.Component {
         } 
     }
 
-    updateColorName = (e) => {
-        const name = e.target.name;
-        const value = e.target.value;
-        this.setState( {
-            [name]: value
-        })
+    getColors = async (userId) => {
+        try {
+            const retrievedColors = await colorsRef
+            .where('colors.user', '==', userId)
+            .get();
+            console.log(retrievedColors.size);
+            if (retrievedColors.size === 0) {
+                const colors = {
+                    user: userId,
+                    colorOneValue: '#',
+                    colorOneName: 'Extra Color 1', 
+                    colorTwoValue: '#',
+                    colorTwoName: 'Extra Color 2',
+                    colorThreeValue: '#', 
+                    colorThreeName: 'Extra Color 3',
+                }
+                console.log('Found no database entry')
+                console.log(colors);
+                const newColors = await colorsRef.add({colors});
+                console.log(newColors)
+                this.setState({extraColors: colors, id: newColors.id })
+            }
+            else {
+            retrievedColors.forEach(colors => {
+                console.log('Actually here')
+                const data = colors.data().colors;
+                this.setState({extraColors: data, id: colors.id});
+                })
+            }
+        } catch(error) {
+            console.log('ERROR', error.message)
+        }
     }
 
-    updateColorValue = (e) => {
-        const name = e.target.name;
-        const value = e.target.value;
-        this.setState( {
-            [name]: value
-        })
+    updateColorName = async (e) => {
+        try {
+            const name = 'colors.' + e.target.name;
+            console.log(name);
+            const value = e.target.value;
+            const colors = await colorsRef.doc(this.state.id);
+            colors.update({[name]: value})
+            console.log('updated colors to: ', value);
+            
+        } catch(error) {
+            console.error('Error updating color name: ', error);
+          }
+    }
+
+    updateColorValue = async (e) => {
+        try {
+            const name = 'colors.' + e.target.name;
+            console.log(name);
+            const value = e.target.value;
+            const colors = await colorsRef.doc(this.state.id);
+            colors.update({[name]: value})
+            console.log('updated colors to: ', value);
+            
+        } catch(error) {
+            console.error('Error updating color value: ', error);
+          }
     }
 
     showColorPicker = () => {
@@ -73,13 +120,18 @@ class CreateBoardForm extends React.Component {
                     <option value="#ffb3ff">Pink</option>
                     <option value="#bf00ff">Purple</option>
                     <option value="#ffad33">Orange</option>
-                    <option value={this.state.colorOneValue}>{this.state.colorOneName}</option>
-                    <option value={this.state.colorTwoValue}>{this.state.colorTwoName}</option>
-                    <option value={this.state.colorThreeValue}>{this.state.colorThreeName}</option>
+                    <option value={this.state.extraColors.colorOneValue}>{this.state.extraColors.colorOneName}</option>
+                    <option value={this.state.extraColors.colorTwoValue}>{this.state.extraColors.colorTwoName}</option>
+                    <option value={this.state.extraColors.colorThreeValue}>{this.state.extraColors.colorThreeName}</option>
                 </select>
                 <button type="submit">Create new board</button>
             </form>  
             <div>
+                <button onClick= {
+                    () => {
+                        console.log(this.state.extraColors.colorOneName)
+                    }
+                }>CLICK </button>
                 <button onClick={this.showColorPicker}> {this.state.showExtraColor ? 'Hide' : 'Show'} extra color selector</button>
                 { this.state.showExtraColor ? (
                 <React.Fragment>
@@ -88,8 +140,9 @@ class CreateBoardForm extends React.Component {
                     name='colorOneName'
                     onChange={(e) => {
                         this.updateColorName(e);
-                    }}
-                    defaultValue={this.state.colorOneName}
+                    }
+                    }
+                    defaultValue={this.state.extraColors.colorOneName}
                 />
                 <input
                     type='text'
@@ -97,7 +150,7 @@ class CreateBoardForm extends React.Component {
                     onChange={(e) => {
                         this.updateColorValue(e);
                     }}
-                    defaultValue={this.state.colorOneValue}
+                    defaultValue={this.state.extraColors.colorOneValue}
                 />
                 <input
                     type='text'
@@ -105,7 +158,7 @@ class CreateBoardForm extends React.Component {
                     onChange={(e) => {
                         this.updateColorName(e);
                     }}
-                    defaultValue={this.state.colorTwoName}
+                    defaultValue={this.state.extraColors.colorTwoName}
                 />
                 <input
                     type='text'
@@ -113,15 +166,15 @@ class CreateBoardForm extends React.Component {
                     onChange={(e) => {
                         this.updateColorValue(e);
                     }}
-                    defaultValue={this.state.colorTwoValue}
+                    defaultValue={this.state.extraColors.colorTwoValue}
                 />
                 <input
                     type='text'
-                    name='coloThreeName'
+                    name='colorThreeName'
                     onChange={(e) => {
                         this.updateColorName(e);
                     }}
-                    defaultValue={this.state.colorThreeName}
+                    defaultValue={this.state.extraColors.colorThreeName}
                 />
                 <input
                     type='text'
@@ -129,7 +182,7 @@ class CreateBoardForm extends React.Component {
                     onChange={(e) => {
                         this.updateColorValue(e);
                     }}
-                    defaultValue={this.state.colorThreeValue}
+                    defaultValue={this.state.extraColors.colorThreeValue}
                 />
                 </React.Fragment>
                 ) : (
@@ -147,7 +200,8 @@ class CreateBoardForm extends React.Component {
 }
 
 CreateBoardForm.propTypes = {
-    createNewBoard: PropTypes.func.isRequired
+    createNewBoard: PropTypes.func.isRequired,
+    userId: PropTypes.string.isRequired,
 }
 
 

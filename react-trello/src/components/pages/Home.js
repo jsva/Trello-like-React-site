@@ -12,7 +12,9 @@ class Home extends React.Component {
     render() {
         return (
             <div>
-            <CreateBoardForm createNewBoard={this.props.createNewBoard} />
+            <CreateBoardForm 
+            createNewBoard={this.props.createNewBoard}
+            userId = {this.props.match.params.userId} />
             <div className="board-preview-wrapper">
             {
                 Object.keys(this.props.boards).map(key => (

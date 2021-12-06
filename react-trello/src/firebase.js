@@ -13,5 +13,6 @@ import 'firebase/auth';
   const boardsRef = db.collection('boards');
   const listsRef = db.collection('lists');
   const cardsRef = db.collection('cards');
+  const colorsRef = db.collection('colors');
 
-  export {boardsRef, listsRef, cardsRef , firebaseAuth};
+  export {boardsRef, listsRef, cardsRef , colorsRef, firebaseAuth};
